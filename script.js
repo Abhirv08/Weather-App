@@ -1,5 +1,5 @@
 const API_KEY = '31531d3c6bdfd09a6d4519950c2b05af';
-const city = 'Chandigarh';
+const city = 'Mizoram';
 const unit = 'metric';
 
 const currentWeather = async() =>{
@@ -36,14 +36,13 @@ const weatherForecast = async() => {
 
 const loadHourlyForecast = (hourlyForecast) => {
     let requiredData = hourlyForecast.slice(1, 13);
-    console.log(requiredData);
     const container = document.querySelector(".hourly_container");
     let innerHTMLString = "";
 
     for(let {dt_txt, icon, temp, description} of requiredData){
         innerHTMLString += `
         <article>
-            <h2>${formatTime(dt_txt.split(" ")[1])}</h2>
+            <h4>${formatTime(dt_txt.split(" ")[1])}</h4>
             <img src="${getURL(icon)}" alt="icon" /> 
             <p class="desc">${description}</p>
             <p>${formatTemp(temp)}</p>
@@ -56,7 +55,6 @@ const loadHourlyForecast = (hourlyForecast) => {
 const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
 const formatTime = (time) => {
     const currTime = Number(time.substring(0,2));
-    console.log(typeof(currTime));
     if(currTime === 0){
         return "00:00 AM";
     }else if(currTime === 12){
@@ -68,6 +66,10 @@ const formatTime = (time) => {
     }
 }
 
+const loadFiveDayForecast = (hourlyForecast) => {
+    
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const currWeatherData = await currentWeather();
     loadCurrentWeather(currWeatherData);
@@ -76,5 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const hourlyForecast = await weatherForecast();
     loadHourlyForecast(hourlyForecast);
-    // console.log(weatherData);
+
+    loadFiveDayForecast(hourlyForecast);
+    console.log(hourlyForecast);
 })
