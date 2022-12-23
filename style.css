@@ -48,10 +48,17 @@ h1, h2, p{
     font-weight: 600;
 }
 
-.desc{
+.img_desc{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img_desc > .desc{
     font-size: 1.2rem;
     font-weight: 550;
     text-transform: capitalize;
+    color: #48484A;
 }
 
 .high, .low{
@@ -60,6 +67,7 @@ h1, h2, p{
 
 #hourly_forecast{
     grid-area: hourly;
+    text-align: center;
     background-color: rgb(221, 220, 220);
 }
 
@@ -70,11 +78,16 @@ h1, h2, p{
     grid-auto-columns: minmax(100px, 1fr);
     overflow-x: auto;
     grid-gap: var(--spacing-regular);
-    margin: 0 5px;    
+    margin: 0 5px; 
 }
 
 .hourly_container > article > .desc{
     font-size: 10px;
+    text-transform: capitalize;
+}
+
+.hourly_container > article > p{
+    font-weight: 500;
 }
 
 #five_day_forecast{
@@ -87,6 +100,10 @@ h1, h2, p{
 
 #humidity{
     grid-area: humidity;
+}
+
+.humidity-data, .speed{
+    font-weight: 500;
 }
 
 .high_low{

@@ -1,5 +1,5 @@
 const API_KEY = '31531d3c6bdfd09a6d4519950c2b05af';
-const city = 'Manali';
+const city = 'Chandigarh';
 const unit = 'metric';
 
 const currentWeather = async() =>{
@@ -12,7 +12,7 @@ const formatTemp = (temp) => `${temp?.toFixed(1)}°`;
 const loadCurrentWeather = ({main: {temp, temp_min, temp_max}, name, weather:[{description, icon}]}) => {
     document.getElementsByClassName("temp")[0].textContent = formatTemp(temp);
     document.getElementsByClassName("city")[0].textContent = name;
-    document.getElementsByClassName("desc")[0].innerHTML = `<img src="${getURL(icon)}" alt="icon"> ${description}`;
+    document.getElementsByClassName("img_desc")[0].innerHTML = `<img src="${getURL(icon)}" alt="icon"> <p class="desc">${description}</p>`;
     document.getElementsByClassName("high")[0].textContent = `H: ${formatTemp(temp_max)}`;
     document.getElementsByClassName("low")[0].textContent = `L: ${formatTemp(temp_min)}`;
 }
@@ -50,7 +50,6 @@ const loadHourlyForecast = (hourlyForecast) => {
         </article>
         `
     }
-
     container.innerHTML = innerHTMLString;
 }
 
