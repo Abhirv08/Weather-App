@@ -1,5 +1,5 @@
 const API_KEY = '31531d3c6bdfd09a6d4519950c2b05af';
-const city = 'Aizwal';
+const city = 'USA';
 const unit = 'metric';
 const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -38,12 +38,15 @@ const loadHourlyForecast = (hourlyForecast) => {
     let requiredData = hourlyForecast.slice(1, 13);
     const container = document.querySelector(".hourly_container");
     let innerHTMLString = "";
+    const timeFormatter = Intl.DateTimeFormat("en", {
+        hour12: true, hour:"numeric"
+    })
 
     for(let {dt_txt, icon, temp, description} of requiredData){
         innerHTMLString += `
         <article>
-            <h4>${formatTime(dt_txt.split(" ")[1])}</h4>
-            <img src="${getURL(icon)}" alt="icon" /> 
+            <h4>${timeFormatter.format(new Date(dt_txt))}</h4>
+            <img src="${getURL(icon)}" alt="icon" />
             <p class="desc">${description}</p>
             <p>${formatTemp(temp)}</p>
         </article>
@@ -53,18 +56,6 @@ const loadHourlyForecast = (hourlyForecast) => {
 }
 
 const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
-const formatTime = (time) => {
-    const currTime = Number(time.substring(0,2));
-    if(currTime === 0){
-        return "00:00 AM";
-    }else if(currTime === 12){
-        return "12:00 PM";
-    }else if(currTime < 12){
-        return `0${currTime}:00 AM`;
-    }else{
-        return `0${currTime - 12}:00 PM`;
-    }
-}
 
 const dayWiseForecast = (hourlyForecast) => {
     let dayWiseForecast = new Map();

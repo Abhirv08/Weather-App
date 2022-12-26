@@ -113,17 +113,22 @@ h1,h3, h4, p{
 .five-day-forecast-container > article{
     display: grid;
     grid-template-columns: repeat(3, minmax(91px, 1fr));
-    align-items: center;
+    align-items: center;    
 }
 
 .five-day-forecast-container > article > h4{
-    padding-left: 10px;
-    text-align: left;
+    justify-self: start;
+    text-transform: capitalize;
+    padding-left: 10%;
 }
 
 .five-day-forecast-container > article > img{
     width: 60px;
-    margin-left: 10px;
+    justify-self: center;
+}
+
+.five-day-forecast-container > article > p{
+    justify-self: end;
 }
 
 #wind_speed{
