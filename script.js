@@ -58,9 +58,13 @@ const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
 
 const dayWiseForecast = (hourlyForecast) => {
     let dayWiseForecast = new Map();
-
-    for(let forecast of hourlyForecast){
+    console.log(hourlyForecast)
+    for(let i = 0; i < hourlyForecast.length; i++){
+        const forecast = hourlyForecast[i];
         const date = forecast.dt_txt.split(" ")[0];
+        if(i === 0 && hourlyForecast[1].dt_txt.split(" ")[0] != date){
+            continue;
+        }
         const day = week[new Date(date).getDay()];
 
         if(dayWiseForecast.has(day)){
@@ -134,5 +138,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const dayWiseForecastData = dayWiseForecast(hourlyForecast);
     loadFiveDayForecase(dayWiseForecastData);
-    console.log(hourlyForecast);
+    //console.log(hourlyForecast);
 })
