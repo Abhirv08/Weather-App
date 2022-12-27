@@ -1,5 +1,5 @@
 const API_KEY = '31531d3c6bdfd09a6d4519950c2b05af';
-const city = 'USA';
+const city = 'Romania';
 const unit = 'metric';
 const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -14,7 +14,6 @@ const loadCurrentWeather = ({main: {temp, temp_min, temp_max}, name, weather:[{d
     document.getElementsByClassName("temp")[0].textContent = formatTemp(temp);
     document.getElementsByClassName("city")[0].textContent = name;
     document.getElementsByClassName("img_desc")[0].innerHTML = `<img src="${getURL(icon)}" alt="icon"> <p class="desc">${description}</p>`;
-    document.getElementsByClassName("high_low")[0].textContent = `${formatTemp(temp_max)} / ${formatTemp(temp_min)}`;
 }
 
 const loadWindSpeed = ({wind:{speed}}) => {
@@ -35,12 +34,12 @@ const weatherForecast = async() => {
 }
 
 const loadHourlyForecast = (hourlyForecast) => {
-    let requiredData = hourlyForecast.slice(1, 13);
+    let requiredData = hourlyForecast.slice(2, 14);
     const container = document.querySelector(".hourly_container");
-    let innerHTMLString = "";
     const timeFormatter = Intl.DateTimeFormat("en", {
         hour12: true, hour:"numeric"
     })
+    let innerHTMLString = "";
 
     for(let {dt_txt, icon, temp, description} of requiredData){
         innerHTMLString += `
@@ -48,7 +47,7 @@ const loadHourlyForecast = (hourlyForecast) => {
             <h4>${timeFormatter.format(new Date(dt_txt))}</h4>
             <img src="${getURL(icon)}" alt="icon" />
             <p class="desc">${description}</p>
-            <p>${formatTemp(temp)}</p>
+            <p>${formatTemp(temp)}C</p>
         </article>
         `
     }
@@ -59,9 +58,13 @@ const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
 
 const dayWiseForecast = (hourlyForecast) => {
     let dayWiseForecast = new Map();
-
-    for(let forecast of hourlyForecast){
+    console.log(hourlyForecast)
+    for(let i = 0; i < hourlyForecast.length; i++){
+        const forecast = hourlyForecast[i];
         const date = forecast.dt_txt.split(" ")[0];
+        if(i === 0 && hourlyForecast[1].dt_txt.split(" ")[0] != date){
+            continue;
+        }
         const day = week[new Date(date).getDay()];
 
         if(dayWiseForecast.has(day)){
@@ -104,7 +107,6 @@ const dayWiseForecast = (hourlyForecast) => {
 }
 
 const loadFiveDayForecase = (dayWiseForecastData) => {
-    console.log(dayWiseForecastData);
     const container = document.querySelector(".five-day-forecast-container");
     let innerHTML = ``;
 
@@ -116,7 +118,7 @@ const loadFiveDayForecase = (dayWiseForecastData) => {
             <article>
                 <h4>${day}</h4>
                 <img src="${getURL(icon)}" alt="">
-                <p class="high_low">${formatTemp(temp_max)} / ${formatTemp(temp_min)}</p>
+                <p class="high_low">${formatTemp(temp_max)} / ${formatTemp(temp_min)}C</p>
             </article>
             `
         }
