@@ -1,16 +1,56 @@
 const API_KEY = '31531d3c6bdfd09a6d4519950c2b05af';
-const city = 'Romania';
 const unit = 'metric';
 const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const currentWeather = async() =>{
-    const currentdata = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${unit}`);
+const getCities = async(search_text) => {
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${search_text}&limit=5&appid=${API_KEY}`);
+
+    return response.json();
+}
+
+const getCityEntries = async(event) => {
+    const {value} = event.target;
+    const cities = await getCities(value);
+    let options = '';
+    for(let {lat, lon, name, state, country} of cities) {
+        options += `
+            <option details='${JSON.stringify({lat, lon, name})}' value="${name}, ${state}, ${country}"></option>
+        `;
+    }
+    document.getElementById('cities_list').innerHTML = options;
+}
+
+const debounce = (func) => {
+    let timer;
+
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() =>{
+            func.apply(this, args);
+        }, 500);
+    }
+}
+
+const debouceSearch = debounce((event) => {getCityEntries(event)});
+
+const updateCity = (event) => {
+    let selectedText = event.target.value;
+    let options = document.querySelectorAll("#cities_list > option");
+    if(options?.length){
+        let selectedOption = Array.from(options).find(option => option.value === selectedText);
+        let selectedDetails = JSON.parse(selectedOption.getAttribute("details"));
+        loadContents(selectedDetails);
+    }
+}
+
+const currentWeather = async({lat, lon}) =>{
+    const currentdata = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`);
     return currentdata.json();
 }
 
 const formatTemp = (temp) => `${temp?.toFixed(1)}°`;
 
-const loadCurrentWeather = ({main: {temp, temp_min, temp_max}, name, weather:[{description, icon}]}) => {
+const loadCurrentWeather = ({main: {temp}, name, weather:[{description, icon}]}) => {
     document.getElementsByClassName("temp")[0].textContent = formatTemp(temp);
     document.getElementsByClassName("city")[0].textContent = name;
     document.getElementsByClassName("img_desc")[0].innerHTML = `<img src="${getURL(icon)}" alt="icon"> <p class="desc">${description}</p>`;
@@ -24,8 +64,8 @@ const loadHumidity = ({main:{humidity}}) => {
     document.getElementsByClassName("humidity-data")[0].textContent = `${humidity}%`;
 }
 
-const weatherForecast = async() => {
-    const forecastData = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=${unit}`);
+const weatherForecast = async({lat, lon, name:city}) => {
+    const forecastData = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`);
     const data = await forecastData.json();
     return data.list.map((forecast) => {
         const {main:{temp, temp_min, temp_max}, weather:[{description, icon}], dt, dt_txt} = forecast;
@@ -58,7 +98,7 @@ const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
 
 const dayWiseForecast = (hourlyForecast) => {
     let dayWiseForecast = new Map();
-    console.log(hourlyForecast)
+
     for(let i = 0; i < hourlyForecast.length; i++){
         const forecast = hourlyForecast[i];
         const date = forecast.dt_txt.split(" ")[0];
@@ -118,7 +158,7 @@ const loadFiveDayForecase = (dayWiseForecastData) => {
             <article>
                 <h4>${day}</h4>
                 <img src="${getURL(icon)}" alt="">
-                <p class="high_low">${formatTemp(temp_max)} / ${formatTemp(temp_min)}C</p>
+                <p class="high_low">${formatTemp(temp_max)} / ${formatTemp(temp_min)}</p>
             </article>
             `
         }
@@ -127,16 +167,23 @@ const loadFiveDayForecase = (dayWiseForecastData) => {
     container.innerHTML = innerHTML;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const currWeatherData = await currentWeather();
+const loadContents = async(selectedDetails) =>{    
+    const currWeatherData = await currentWeather(selectedDetails);
     loadCurrentWeather(currWeatherData);
     loadWindSpeed(currWeatherData);
     loadHumidity(currWeatherData);
 
-    const hourlyForecast = await weatherForecast();
+    const hourlyForecast = await weatherForecast(selectedDetails);
     loadHourlyForecast(hourlyForecast);
 
     const dayWiseForecastData = dayWiseForecast(hourlyForecast);
     loadFiveDayForecase(dayWiseForecastData);
-    //console.log(hourlyForecast);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const cityInput = document.getElementById("search");
+    cityInput.addEventListener("input", debouceSearch);
+    cityInput.addEventListener("change", updateCity);
+
+    
 })

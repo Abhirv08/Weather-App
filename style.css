@@ -18,12 +18,12 @@ h1,h3, h4, p{
 }
 
 .container{
-    width: 400px;
+    max-width: 800px;
     margin: auto;
-    border: 1px solid black;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-areas: 
+    "search search"
     "current current"
     "hourly hourly"
     "five-day five-day"
@@ -32,14 +32,24 @@ h1,h3, h4, p{
     gap: var(--spacing-regular);
 }
 
+.container > input{
+    grid-area: search;
+    height: 2.5rem;
+    border-radius: var(--spacing-regular);
+    padding-left: 0.5rem;
+    background-color: rgb(221, 220, 220);
+    font-size: 1.5rem;
+    border: none;
+}
+
 .container, .container > section{
-    border: 1px solid black;
     border-radius: var(--spacing-regular);
     text-align: center;
 }
 
 #todays_weather{
     grid-area: current;
+    background-color: rgb(221, 220, 220);
 }
 
 .temp{
@@ -51,10 +61,11 @@ h1,h3, h4, p{
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
-.img_desc > img{
-    width: 60px;
+.img_desc > img{   
+    width: 25px;
 }
 
 .img_desc > .desc{
@@ -100,6 +111,7 @@ h1,h3, h4, p{
 
 #five_day_forecast{
     grid-area: five-day;
+    background-color: rgb(221, 220, 220);
 }
 
 .five-day-forecast-container{
@@ -127,19 +139,42 @@ h1,h3, h4, p{
     justify-self: center;
 }
 
-.five-day-forecast-container > article > p{
-    justify-self: end;
-}
-
 #wind_speed{
     grid-area: wind-speed;
+    background-color: rgb(221, 220, 220);
 }
 
 #humidity{
     grid-area: humidity;
+    background-color: rgb(221, 220, 220);
 }
 
 .humidity-data, .speed{
     font-weight: 500;
 }
 
+@media screen and (min-width: 768px) {
+    .container{
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-areas: 
+        "search search search search"
+        "current current current current"
+        "hourly hourly five-day five-day"
+        "wind-speed humidity five-day five-day";
+        margin-top: 1rem;
+    }
+
+    #todays_weather{
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    #todays_weather > h1{
+        font-size: 2rem;
+    }
+
+    .img_desc > img{
+        width: 85%;
+    }
+}
