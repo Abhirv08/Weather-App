@@ -180,10 +180,19 @@ const loadContents = async(selectedDetails) =>{
     loadFiveDayForecase(dayWiseForecastData);
 }
 
+const currLocation = () => {
+    navigator.geolocation.getCurrentPosition(currLocation => {
+        const selectedDetails = {
+            lat : currLocation.coords.latitude,
+            lon : currLocation.coords.longitude
+        }
+        loadContents(selectedDetails);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
+    currLocation();
     const cityInput = document.getElementById("search");
     cityInput.addEventListener("input", debouceSearch);
-    cityInput.addEventListener("change", updateCity);
-
-    
+    cityInput.addEventListener("change", updateCity);    
 })

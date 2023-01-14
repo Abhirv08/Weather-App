@@ -36,7 +36,7 @@ h1,h3, h4, p{
     grid-area: search;
     height: 2.5rem;
     border-radius: var(--spacing-regular);
-    padding-left: 0.5rem;
+    padding: 0 0.5rem;
     background-color: rgb(221, 220, 220);
     font-size: 1.5rem;
     border: none;
