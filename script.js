@@ -3,7 +3,7 @@ const unit = 'metric';
 const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const getCities = async(search_text) => {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${search_text}&limit=5&appid=${API_KEY}`);
+    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${search_text}&limit=5&appid=${API_KEY}`);
 
     return response.json();
 }
@@ -94,7 +94,7 @@ const loadHourlyForecast = (hourlyForecast) => {
     container.innerHTML = innerHTMLString;
 }
 
-const getURL = (icon) => `http://openweathermap.org/img/wn/${icon}@2x.png`;
+const getURL = (icon) => `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
 const dayWiseForecast = (hourlyForecast) => {
     let dayWiseForecast = new Map();
